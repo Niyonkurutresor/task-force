@@ -20,7 +20,6 @@
 </script>
 
 <div class="min-h-screen bg-gray-100">
-	<!-- Sidebar -->
 	<nav class="fixed left-0 top-0 h-full w-64 bg-white shadow-lg">
 		<div class="px-4 py-6">
 			<h1 class="text-2xl font-bold text-blue-600">Wallet App</h1>

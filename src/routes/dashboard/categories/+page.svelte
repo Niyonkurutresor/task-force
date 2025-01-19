@@ -79,15 +79,11 @@
 		}
 	}
 
-	// Handle category edit
 	function handleEditCategory(category: Category) {
-		// Emit edit event or handle edit logic
 		console.log('Edit category:', category);
 	}
 
-	// Handle subcategory edit
 	function handleEditSubcategory(subCategory: SubCategory) {
-		// Emit edit event or handle edit logic
 		console.log('Edit subcategory:', subCategory);
 	}
 </script>
