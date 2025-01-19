@@ -2,7 +2,6 @@
 	export let type: 'login' | 'signup' = 'login';
 	export let onClose: () => void;
 	export let form: any;
-	export let errors: any;
 	export let enhance: any;
 	export let message: string | undefined;
 	export let submitting: boolean = false;
@@ -22,12 +21,6 @@
 		</button>
 	</div>
 
-	{#if message}
-		<div class="rounded-md bg-red-50 p-3 text-sm text-red-500">
-			{message}
-		</div>
-	{/if}
-
 	<div class="space-y-2">
 		<label for="username" class="block text-sm font-medium text-gray-700"> Username </label>
 		<input
@@ -38,9 +31,6 @@
 			bind:value={form.username}
 			required
 		/>
-		{#if errors.username}
-			<p class="mt-1 text-sm text-red-500">{errors.username}</p>
-		{/if}
 	</div>
 
 	<div class="space-y-2">
@@ -53,9 +43,6 @@
 			bind:value={form.password}
 			required
 		/>
-		{#if errors.password}
-			<p class="mt-1 text-sm text-red-500">{errors.password}</p>
-		{/if}
 	</div>
 
 	<button

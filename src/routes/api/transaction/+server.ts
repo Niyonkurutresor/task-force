@@ -5,7 +5,38 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
 import * as table from '$lib/server/db/schema';
 import { v4 as uuidv4 } from 'uuid';
-import { desc } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
+
+export const GET: RequestHandler = async () => {
+	try {
+		const transactions = await db
+			.select({
+				transaction_id: table.TransactionTable.transaction_id,
+				income: table.TransactionTable.income,
+				expanse: table.ExpenseTable.amount,
+				balance: table.TransactionTable.balance,
+				payment_method: table.PaymentMethodTable.method_name,
+				date: table.TransactionTable.created_at
+			})
+			.from(table.TransactionTable)
+			.leftJoin(
+				table.ExpenseTable,
+				eq(table.ExpenseTable.expense_id, table.TransactionTable.expense_id)
+			)
+			.leftJoin(
+				table.PaymentMethodTable,
+				eq(table.PaymentMethodTable.payment_method_id, table.TransactionTable.payment_method_id)
+			)
+			.orderBy(desc(table.TransactionTable.created_at));
+
+		if (!transactions || transactions.length === 0)
+			return respond(404, '', 'Failed to find budget');
+		return respond(200, transactions);
+	} catch (error) {
+		console.log(error);
+		return respond(500, '', 'INTERNAL SERVERrr ERROR.');
+	}
+};
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {

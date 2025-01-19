@@ -56,7 +56,7 @@
 {#if !Loading}
 	<div>
 		<button
-			class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-600 backdrop:to-blue-400 hover:text-gray-900"
+			class="flex items-center gap-2 rounded-md bg-blue-400 px-3 py-2 text-sm font-medium text-white backdrop:to-blue-400 hover:text-gray-100"
 			on:click={() => (addBudgetModel = true)}
 		>
 			<SquarePlus />

@@ -1,42 +1,33 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { PUBLIC_API_URL } from '$env/static/public';
 	import { SearchIcon, FilterIcon } from 'svelte-feather-icons';
-
-	let isLoading = true;
+	export let id;
+	let isLoading = false;
 
 	interface Transaction {
-		id: string;
-		description: string;
-		date: string;
-		amount: number;
-		type: 'income' | 'expense';
-		category: string;
-		status: 'completed' | 'pending' | 'failed';
+		transaction_id: string;
+		income: number | null;
+		expanse: number | null;
+		balance: number | null;
+		payment_method: string | null;
+		date: Date | null;
 	}
 
-	const transactions: Transaction[] = [
-		{
-			id: '1',
-			description: 'Grocery Shopping',
-			date: '2024-01-18',
-			amount: 120.5,
-			type: 'expense',
-			category: 'Food',
-			status: 'completed'
-		}
-	];
+	let transactions: Transaction[] = [];
 
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case 'completed':
-				return 'bg-green-100 text-green-800';
-			case 'pending':
-				return 'bg-yellow-100 text-yellow-800';
-			case 'failed':
-				return 'bg-red-100 text-red-800';
-			default:
-				return 'bg-gray-100 text-gray-800';
+	onMount(async () => {
+		try {
+			isLoading = true;
+			const allCategories = await fetch(`${PUBLIC_API_URL}/transaction`);
+			transactions = (await allCategories.json())?.message ?? [];
+
+			isLoading = false;
+		} catch (error) {
+			console.error('Error fetching settings data:', error);
+			isLoading = false;
 		}
-	};
+	});
 </script>
 
 <div class="space-y-4">
@@ -68,31 +59,31 @@
 						<th
 							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
 						>
-							Description
+							Method Name
+						</th>
+						<th
+							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+						>
+							Income
+						</th>
+						<th
+							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+						>
+							Expense
+						</th>
+						<th
+							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+						>
+							Balance
 						</th>
 						<th
 							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
 						>
 							Date
 						</th>
-						<th
-							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-						>
-							Category
-						</th>
-						<th
-							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-						>
-							Amount
-						</th>
-						<th
-							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-						>
-							Status
-						</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-gray-200 bg-white">
+				<tbody class="divide-y divide-gray-200 bg-white" {id}>
 					{#if isLoading}
 						{#each Array(5) as _}
 							<tr class="animate-pulse">
@@ -117,33 +108,24 @@
 						{#each transactions as transaction}
 							<tr class="hover:bg-gray-50">
 								<td class="whitespace-nowrap px-6 py-4">
-									<div class="text-sm text-gray-900">{transaction.description}</div>
+									<div class="text-sm text-gray-900">{transaction.payment_method}</div>
 								</td>
 								<td class="whitespace-nowrap px-6 py-4">
 									<div class="text-sm text-gray-500">
-										{new Date(transaction.date).toLocaleDateString()}
+										{transaction?.income ?? 0}
 									</div>
 								</td>
 								<td class="whitespace-nowrap px-6 py-4">
-									<div class="text-sm text-gray-500">{transaction.category}</div>
+									<div class="text-sm text-gray-500">{transaction?.expanse ?? 0}</div>
+								</td>
+
+								<td class="whitespace-nowrap px-6 py-4">
+									<div class="text-sm text-gray-500">{transaction?.balance ?? 0}</div>
 								</td>
 								<td class="whitespace-nowrap px-6 py-4">
-									<div
-										class="text-sm {transaction.type === 'income'
-											? 'text-green-600'
-											: 'text-red-600'}"
-									>
-										{transaction.type === 'income' ? '+' : '-'}${transaction.amount.toFixed(2)}
+									<div class="text-sm text-gray-500">
+										{new Date(transaction?.date ?? '').toLocaleDateString()}
 									</div>
-								</td>
-								<td class="whitespace-nowrap px-6 py-4">
-									<span
-										class="inline-flex rounded-full px-2 text-xs font-semibold leading-5 {getStatusColor(
-											transaction.status
-										)}"
-									>
-										{transaction.status}
-									</span>
 								</td>
 							</tr>
 						{/each}

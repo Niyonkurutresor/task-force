@@ -39,24 +39,32 @@
 	let products: Products[] = [];
 	let subCategories: SubCategory[] = [];
 	let newProduct = { sub_category_id: '', budget_id: '', quantity: 0, amount: 0 };
-	onMount(async () => {
+	async function fetchProducts() {
 		isLoading = true;
 		try {
 			const response = await fetch(`${PUBLIC_API_URL}/bugetListById/${budget_id}`);
-			const subCategoriesREsponse = await fetch(`${PUBLIC_API_URL}/subCategory`);
 			products = (await response.json())?.message ?? [];
-			subCategories = (await subCategoriesREsponse.json())?.message ?? [];
-			isLoading = false;
 		} catch (error) {
-			toast.error('Try to reload');
-			console.error('Error fetching settings data:', error);
+			toast.error('Failed to fetch products');
+			console.error('Error fetching products:', error);
+		} finally {
 			isLoading = false;
 		}
-	});
+	}
 
-	afterUpdate(async () => {
-		const response = await fetch(`${PUBLIC_API_URL}/bugetListById/${budget_id}`);
-		products = (await response.json())?.message ?? [];
+	onMount(async () => {
+		isLoading = true;
+		try {
+			const subCategoriesResponse = await fetch(`${PUBLIC_API_URL}/subCategory`);
+			subCategories = (await subCategoriesResponse.json())?.message ?? [];
+
+			await fetchProducts();
+		} catch (error) {
+			toast.error('Try to reload');
+			console.error('Error fetching data:', error);
+		} finally {
+			isLoading = false;
+		}
 	});
 
 	async function addProduct() {
@@ -66,8 +74,10 @@
 				body: JSON.stringify({ ...newProduct, budget_id: budget_id ?? '' })
 			});
 			const addResponse = await response.json();
+
 			if (addResponse?.message) {
 				toast.success(addResponse?.message ?? '');
+				await fetchProducts();
 			} else {
 				toast.error(addResponse?.error ?? '');
 			}
@@ -77,18 +87,6 @@
 			console.error('Error adding category:', error);
 		}
 	}
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case 'completed':
-				return 'bg-green-100 text-green-800';
-			case 'pending':
-				return 'bg-yellow-100 text-yellow-800';
-			case 'failed':
-				return 'bg-red-100 text-red-800';
-			default:
-				return 'bg-gray-100 text-gray-800';
-		}
-	};
 
 	let addproductModel = false;
 	const closeModals = () => {

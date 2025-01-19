@@ -3,19 +3,19 @@
 	import AuthForm from '$lib/components/AuthForm.svelte';
 	import { fade } from 'svelte/transition';
 	import { superForm } from 'sveltekit-superforms/client';
+
 	import type { ActionData } from './$types';
 	import type { PageData } from './$types';
-	let form: ActionData = null;
+	import toast from 'svelte-french-toast';
+	export let form: ActionData;
 	export let data: PageData;
-	let { error, message } = form ?? { error: '', message: '' };
-	$: ({ error, message } = form ?? { error: '', message: '' });
-	$: console.log(error, message);
+
 	const {
 		form: loginForm,
-		errors: loginErrors,
 		enhance: loginEnhance,
 		message: loginMessage,
-		submitting: loginSubmitting
+		submitting: loginSubmitting,
+		errors: loginErrors
 	} = superForm(data.loginForm, {
 		resetForm: false,
 		clearOnSubmit: 'none',
@@ -23,21 +23,23 @@
 			if (result.type === 'success') {
 				showLoginModal = false;
 			}
+			window.location.reload();
 		}
 	});
 
 	const {
 		form: signupForm,
-		errors: signupErrors,
 		enhance: signupEnhance,
 		message: signupMessage,
-		submitting: signupSubmitting
+		submitting: signupSubmitting,
+		errors: signupErrors
 	} = superForm(data.signupForm, {
 		resetForm: false,
 		onResult: ({ result }) => {
 			if (result.type === 'success') {
 				showSignupModal = false;
 			}
+			window.location.reload();
 		}
 	});
 	let showLoginModal = false;
@@ -109,7 +111,6 @@
 			type="login"
 			onClose={closeModals}
 			form={$loginForm}
-			errors={$loginErrors}
 			message={$loginMessage}
 			enhance={loginEnhance}
 			submitting={$loginSubmitting}
@@ -121,7 +122,6 @@
 			type="signup"
 			onClose={closeModals}
 			form={$signupForm}
-			errors={$signupErrors}
 			message={$signupMessage}
 			enhance={signupEnhance}
 			submitting={$signupSubmitting}
