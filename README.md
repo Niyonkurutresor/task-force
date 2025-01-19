@@ -22,24 +22,23 @@ To start using the app, you need to sign up for an account.
 ### **Budget Management**
 
 - Navigate to the **Budget** menu on the dashboard.
-- Create a new budget for a specific period by entering the required details.
-- Once a budget is created, click on it to add products you plan to purchase during the selected period.
-
-### **Settings**
-
-- If the product you need isn't available initially, go to the **Settings** menu.
-- Use the **Sub-Categories Form** to add new products, like "Banana," and other items you wish to manage.
+- Create a new budget for a specific period by clicking **add Budget** and entering the required details.
+- Once a budget is created, click on it to add products you plan to purchase during the specified period.
 
 ### **Transactions**
 
 - To purchase products on your list, go to **Transactions** and click **Buy Product**.
 - A pop-up will appear displaying products within the active budget range (including today's date).
 - Enter the amount you're paying for the product.
+- ### notice
+- Only products added to budgets covering the current date (today) will appear in the transaction list.
+- Transactions exceeding the planned budget amount will not be completed.( you will be notified)
 
-#### **Important Notes:**
+### **Settings**
 
-- Only products added to budgets covering the current date will appear in the transaction list.
-- Transactions exceeding the planned budget amount will not be completed.
+- If the product you need isn't available initially, go to the **Settings** menu.
+- Use the **Sub-Categories Form** to add new products, like "Banana," and other items you wish to manage.
+
 
 ### **Categories**
 
