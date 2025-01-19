@@ -9,11 +9,11 @@ import { v4 as uuidv4 } from 'uuid';
 export const GET: RequestHandler = async () => {
 	try {
 		const methods = await db.select().from(table.PaymentMethodTable);
-		if (!methods || methods.length === 0) return respond('There is no any Method', 404);
-		return respond(methods, 200);
+		if (!methods || methods.length === 0) return respond(404, '', 'There is no any Method');
+		return respond(200, methods);
 	} catch (error) {
 		console.log(error);
-		return respond('INTERNAL SERVER ERROR.', 500);
+		return respond(500, '', 'INTERNAL SERVER ERROR.');
 	}
 };
 
@@ -25,10 +25,10 @@ export const POST: RequestHandler = async ({ request }) => {
 			payment_method_id: uuidv4(),
 			method_name: validatedData.name
 		});
-		return respond('Payment method created successfully.', 200);
+		return respond(200, 'Payment method created successfully.');
 	} catch (error) {
 		console.log(error);
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVER ERROR.', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR.');
 	}
 };

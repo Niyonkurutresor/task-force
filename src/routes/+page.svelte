@@ -3,7 +3,6 @@
 	import AuthForm from '$lib/components/AuthForm.svelte';
 	import { fade } from 'svelte/transition';
 	import { superForm } from 'sveltekit-superforms/client';
-	import { toasts } from 'svelte-toasts';
 	import type { ActionData } from './$types';
 	import type { PageData } from './$types';
 	let form: ActionData = null;
@@ -15,9 +14,11 @@
 		form: loginForm,
 		errors: loginErrors,
 		enhance: loginEnhance,
-		message: loginMessage
+		message: loginMessage,
+		submitting: loginSubmitting
 	} = superForm(data.loginForm, {
 		resetForm: false,
+		clearOnSubmit: 'none',
 		onResult: ({ result }) => {
 			if (result.type === 'success') {
 				showLoginModal = false;
@@ -29,7 +30,8 @@
 		form: signupForm,
 		errors: signupErrors,
 		enhance: signupEnhance,
-		message: signupMessage
+		message: signupMessage,
+		submitting: signupSubmitting
 	} = superForm(data.signupForm, {
 		resetForm: false,
 		onResult: ({ result }) => {
@@ -110,6 +112,7 @@
 			errors={$loginErrors}
 			message={$loginMessage}
 			enhance={loginEnhance}
+			submitting={$loginSubmitting}
 		/>
 	</Modal>
 
@@ -121,6 +124,7 @@
 			errors={$signupErrors}
 			message={$signupMessage}
 			enhance={signupEnhance}
+			submitting={$signupSubmitting}
 		/>
 	</Modal>
 </div>

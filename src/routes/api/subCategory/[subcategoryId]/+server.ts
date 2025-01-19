@@ -13,11 +13,11 @@ export const GET: RequestHandler = async ({ params }) => {
 			.select()
 			.from(table.SubCategoryTable)
 			.where(eq(table.SubCategoryTable.sub_category_id, subcategoryId ?? ''));
-		if (!subCategory) return respond('There is no such sub-category.', 404);
-		return respond(subCategory, 200);
+		if (!subCategory) return respond(404, '', 'There is no such sub-category.');
+		return respond(200);
 	} catch (error) {
-		if (error instanceof z.ZodError) return respond(error?.errors ?? '', 4015);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(4015, '', error?.errors ?? '');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -30,7 +30,7 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 			.select()
 			.from(table.CategoryTable)
 			.where(eq(table.CategoryTable.category_id, validatedData.category_id));
-		if (!category) return respond('There is no category with such id', 404);
+		if (!category) return respond(404, '', 'There is no category with such id');
 		const subCategory = await db
 			.select({
 				category_id: table.SubCategoryTable.category_id,
@@ -40,7 +40,7 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 			.from(table.SubCategoryTable)
 			.where(eq(table.SubCategoryTable.sub_category_id, subcategoryId ?? ''));
 		if (!subCategory || subCategory.length == 0)
-			return respond('There is no such sub-category.', 404);
+			return respond(404, '', 'There is no such sub-category.');
 		await db
 			.update(table.SubCategoryTable)
 			.set({
@@ -48,10 +48,10 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 				sub_category_description: validatedData.descrition
 			})
 			.where(eq(table.SubCategoryTable.sub_category_id, subcategoryId ?? ''));
-		return respond('Sub-category updated successfyll!', 200);
+		return respond(200, 'Sub-category updated successfyll!');
 	} catch (error) {
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -62,13 +62,14 @@ export const DELETE: RequestHandler = async ({ params }) => {
 			.select()
 			.from(table.SubCategoryTable)
 			.where(eq(table.SubCategoryTable.sub_category_id, subcategoryId ?? ''));
-		if (!subCategory || subCategory.length == 0) return respond('Sub-category Does not exist', 404);
+		if (!subCategory || subCategory.length == 0)
+			return respond(404, '', 'Sub-category Does not exist');
 		await db
 			.delete(table.SubCategoryTable)
 			.where(eq(table.SubCategoryTable.sub_category_id, subcategoryId ?? ''));
-		return respond('Sub-category Deleted Successfuly!', 200);
+		return respond(200, 'Sub-category Deleted Successfuly!');
 	} catch (error) {
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };

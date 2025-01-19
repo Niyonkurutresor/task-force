@@ -5,15 +5,16 @@ import * as table from '$lib/server/db/schema';
 import { budgetSchema } from '$lib/schemas';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
+import { gt } from 'drizzle-orm';
 
 export const GET: RequestHandler = async () => {
 	try {
 		const budget = await db.select().from(table.BudgetTable);
-		if (!budget || budget.length === 0) return respond('Failed to find budget', 404);
-		return respond(budget, 200);
+		if (!budget || budget.length === 0) return respond(404, '', 'Failed to find budget');
+		return respond(200, budget);
 	} catch (error) {
 		console.log(error);
-		return respond('INTERNAL SERVER ERROR.', 500);
+		return respond(500, '', 'INTERNAL SERVERrr ERROR.');
 	}
 };
 
@@ -21,6 +22,12 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const data = await request.json();
 		const validatedData = budgetSchema.parse(data);
+		// find budget ini selected period
+		const results = await db
+			.select()
+			.from(table.BudgetTable)
+			.where(gt(table.BudgetTable.end_date, validatedData.end_date));
+		if (results.length > 0) return respond(400, '', 'There is other budget in selected range');
 		await db.insert(table.BudgetTable).values({
 			budget_id: uuidv4(),
 			budget_name: validatedData.name,
@@ -28,10 +35,10 @@ export const POST: RequestHandler = async ({ request }) => {
 			start_date: validatedData.start_date,
 			end_date: validatedData.end_date
 		});
-		return respond('Budget created successfully.', 200);
+		return respond(200, 'Budget created successfully.');
 	} catch (error) {
 		console.log(error);
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVERrr ERROR.', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVERrr ERROR.');
 	}
 };

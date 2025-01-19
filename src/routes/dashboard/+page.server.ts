@@ -8,6 +8,6 @@ export const actions: Actions = {
 		}
 		await auth.invalidateSession(event.locals.session.id);
 		auth.deleteSessionTokenCookie(event);
-		return redirect(303, '/');
+		return redirect(302, '/');
 	}
 };

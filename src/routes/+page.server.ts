@@ -51,7 +51,7 @@ export const actions: Actions = {
 			const sessionToken = auth.generateSessionToken();
 			const session = await auth.createSession(sessionToken, existingUser.user_id);
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-			throw redirect(302, '/dashboard');
+			return redirect(302, '/dashboard');
 		} catch (error) {
 			console.log(error);
 			return fail(500, { form, message: 'Login failed' });
@@ -76,7 +76,7 @@ export const actions: Actions = {
 				.where(eq(table.UserTable.name, user_name));
 
 			if (user.length > 0) {
-				return fail(400, { form, message: 'Invalid username' });
+				return message(form, `User with ${user_name} Aleredy exist.`);
 			}
 			await db.insert(table.UserTable).values({
 				user_id: userId,
@@ -86,10 +86,10 @@ export const actions: Actions = {
 			const sessionToken = auth.generateSessionToken();
 			const session = await auth.createSession(sessionToken, userId);
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+			return redirect(302, '/dashboard');
 		} catch (e) {
 			console.log(e);
-			return fail(500, { form, message: 'An error has occurred' });
+			return message(form, 'Something went wrong, try again.');
 		}
-		throw redirect(302, '/dashboard');
 	}
 };

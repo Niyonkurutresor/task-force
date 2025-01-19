@@ -16,8 +16,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			.from(table.BudgetListTable)
 			.where(eq(table.BudgetListTable.budget_list_id, validatedData.budget_list_id));
 		if (!existInBudgetList || existInBudgetList.length === 0)
-			return respond('There is no such budget list.', 404);
-		if (existInBudgetList[0].isBought === true) return respond('The product is bought', 400);
+			return respond(404, '', 'There is no such budget list.');
+		if (existInBudgetList[0].isBought === true) return respond(400, '', 'The product is bought');
 		// check the balance on his account
 		await db.insert(table.ExpenseTable).values({
 			expense_id: uuidv4(),
@@ -34,10 +34,10 @@ export const POST: RequestHandler = async ({ request }) => {
 			})
 			.where(eq(table.BudgetListTable.budget_list_id, validatedData.budget_list_id));
 
-		return respond('Expense created successfully', 200);
+		return respond(200, 'Expense created successfully');
 	} catch (error) {
 		console.log(error);
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };

@@ -15,15 +15,15 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 			.select()
 			.from(table.CategoryTable)
 			.where(eq(table.CategoryTable.category_id, categoryId ?? ''));
-		if (!category || category.length == 0) return respond('There is no such category.', 404);
+		if (!category || category.length == 0) return respond(404, '', 'There is no such category.');
 		await db
 			.update(table.CategoryTable)
 			.set({ category_name: validatedData.name, category_description: validatedData.descrition })
 			.where(eq(table.CategoryTable.category_id, categoryId ?? ''));
-		return respond('Category updated successfully', 200);
+		return respond(200, 'Category updated successfully');
 	} catch (error) {
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -38,11 +38,11 @@ export const GET: RequestHandler = async ({ params }) => {
 			})
 			.from(table.CategoryTable)
 			.where(eq(table.CategoryTable.category_id, categoryId ?? ''));
-		if (!category || category.length == 0) return respond('There is no such category.', 404);
-		return respond(category, 200);
+		if (!category || category.length == 0) return respond(404, '', 'There is no such category.');
+		return respond(200, category);
 	} catch (error) {
-		if (error instanceof z.ZodError) return respond(error?.errors ?? '', 4015);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(4015, '', error?.errors ?? '');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -53,13 +53,13 @@ export const DELETE: RequestHandler = async ({ params }) => {
 			.select()
 			.from(table.CategoryTable)
 			.where(eq(table.CategoryTable.category_id, categoryId ?? ''));
-		if (!category || category.length == 0) return respond('Category Does not exist', 404);
+		if (!category || category.length == 0) return respond(404, '', 'Category Does not exist');
 		await db
 			.delete(table.CategoryTable)
 			.where(eq(table.CategoryTable.category_id, categoryId ?? ''));
-		return respond('Category Deleted Successfuly!', 200);
+		return respond(200, 'Category Deleted Successfuly!');
 	} catch (error) {
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
