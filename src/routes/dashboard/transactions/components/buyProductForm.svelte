@@ -10,51 +10,75 @@
 		quantity: number;
 		product_name: string;
 	}
-	interface SubCategoryId {
-		subcagory_id: string;
+	interface MethodOFPayment {
+		payment_method_id: string;
+		method_name: string;
 	}
 	interface Amounts {
 		[key: string]: number;
 	}
 	let products: Product[] = [];
 	let amounts: Amounts = {};
-	async function buyProduct(subcategory_id: string, amount: number) {
-		try {
-			// const response = await fetch(`${PUBLIC_API_URL ?? ''}/budget/`, {
-			// 	method: 'POST',
-			// 	body: JSON.stringify(newBudget)
-			// });
-			// const budget = await response.json();
-			// if (budget?.message) {
-			// 	newBudget = { name: '', descrition: '', start_date: '', end_date: '' };
-			// 	closeModals();
-			// 	return toast.success(budget?.message ?? 'Product Category added successfully.');
-			// }
-			// toast.error(budget?.error ?? 'Something went wrong');
-		} catch (error) {
-			toast.error('Something went wrong, Please try again.');
-			console.error('Error adding category:', error);
-		}
-	}
+	let newIncome = { payment_method_id: '', income: 0 };
+	let paymentMethods: MethodOFPayment[] = [];
+	let isLoading = false;
 
 	onMount(async () => {
 		try {
+			isLoading = true;
+			const k = await fetch(`${PUBLIC_API_URL}/methodOfPayment/`);
+			const paymentMethotsREsponse = (await k.json())?.message ?? [];
+			if (paymentMethotsREsponse) {
+				paymentMethods = paymentMethotsREsponse;
+			} else {
+				toast.error(paymentMethotsREsponse ?? 'Something Went wrong, Please try again.');
+			}
 			const response = await fetch(`${PUBLIC_API_URL ?? ''}/bugetListById/`);
 			const productsResult = await response.json();
 			if (productsResult?.message) {
 				products = productsResult?.message ?? [];
 				return;
 			}
+			isLoading = false;
 		} catch (error) {
 			toast.error('Something went wrong, Please try again.');
 			console.error('Error adding category:', error);
 		}
 	});
+
+	async function buyProduct(subcategory_id: string, amount: number) {
+		try {
+			console.log(subcategory_id, amount, newIncome.payment_method_id);
+			const response = await fetch(`${PUBLIC_API_URL ?? ''}/buyProduct/`, {
+				method: 'POST',
+				body: JSON.stringify({
+					budget_list_id: subcategory_id,
+					amount,
+					payment_method_id: newIncome.payment_method_id
+				})
+			});
+			const transaction = await response.json();
+			if (transaction?.message) {
+				closeModals();
+				return toast.success(transaction?.message ?? 'Product Category added successfully.');
+			}
+			toast.error(transaction?.error ?? 'Something went wrong');
+		} catch (error) {
+			toast.error('Something went wrong, Please try again.');
+			console.error('Error adding category:', error);
+		}
+	}
 </script>
 
 <section class="rounded-lg bg-white p-6 shadow">
 	<h2 class="mb-4 text-2xl font-semibold">Buy Product</h2>
 	<div class="mb-4">
+		<select bind:value={newIncome.payment_method_id} name="category_id" id="category_id">
+			<option value="" disabled> Resource</option>
+			{#each paymentMethods as method}
+				<option value={method.payment_method_id}>{method?.method_name ?? ''}</option>
+			{/each}
+		</select>
 		<div class="overflow-x-auto">
 			<table class="min-w-full rounded-lg border border-gray-200 bg-white shadow-sm">
 				<thead>
