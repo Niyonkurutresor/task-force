@@ -83,7 +83,7 @@
 		</div>
 	</div>
 
-	<!-- Charts -->
+	<!-- charts -->
 	<div class="grid grid-cols-1 gap-6 bg-white p-6 shadow-sm md:grid-cols-2">
 		<div>
 			<div class="p-6">
@@ -114,7 +114,7 @@
 		</div>
 	</div>
 
-	<!-- Recent Transactions -->
+	<!-- recent Transactions -->
 	<div class="rounded-lg bg-white p-6 shadow-sm">
 		<div class="mb-6 flex items-center justify-between">
 			<h2 class="text-lg font-medium text-gray-900">Recent Transactions</h2>
@@ -141,7 +141,7 @@
 			{/each}
 		</div>
 	</div>
-	<!-- Budget Alert -->
+	<!-- budget alert -->
 	<div class="border-yellow-200 bg-yellow-50">
 		<div class="flex items-center p-6">
 			<AlertCircle class="mr-2 h-5 w-5 text-yellow-500" />

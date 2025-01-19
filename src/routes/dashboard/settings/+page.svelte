@@ -5,7 +5,7 @@
 	import { roundArrow } from 'tippy.js';
 	import 'tippy.js/animations/perspective-subtle.css';
 	import { PUBLIC_API_URL } from '$env/static/public';
-	// Types based on your schema
+
 	type User = {
 		user_id: string;
 		name: string;
