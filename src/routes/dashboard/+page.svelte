@@ -1,6 +1,5 @@
-<script>
-	import { Wallet, TrendingUp, TrendingDown, AlertCircle } from 'lucide-svelte';
-
+<script lang="ts">
+	import { Wallet, TrendingUp, TrendingDown, AlertCircle, ActivityIcon } from 'lucide-svelte';
 	const data = {
 		balance: 25000,
 		monthlyIncome: 45000,
@@ -18,13 +17,40 @@
 		]
 	};
 
+	type RecentTransaction = {
+		title: string;
+		date: string;
+		amount: string;
+		type: 'income' | 'expense';
+	};
+
+	const recentTransactions: RecentTransaction[] = [
+		{
+			title: 'Salary Deposit',
+			date: 'Today',
+			amount: '+$3,500',
+			type: 'income'
+		},
+		{
+			title: 'Grocery Shopping',
+			date: 'Yesterday',
+			amount: '-$120',
+			type: 'expense'
+		},
+		{
+			title: 'Netflix Subscription',
+			date: '2 days ago',
+			amount: '-$15',
+			type: 'expense'
+		}
+	];
 	const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 </script>
 
 <div class="space-y-6">
 	<!-- threee Top Cards -->
 	<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-		<div>
+		<div class="rounded-md bg-white p-6 shadow-sm">
 			<div class="flex items-center justify-between p-6">
 				<div>
 					<p class="text-sm font-medium text-gray-500">Total Balance</p>
@@ -33,7 +59,7 @@
 				<Wallet class="h-8 w-8 text-blue-500" />
 			</div>
 		</div>
-		<div>
+		<div class="rounded-md bg-white p-6 shadow-sm">
 			<div class="flex items-center justify-between p-6">
 				<div>
 					<p class="text-sm font-medium text-gray-500">Income</p>
@@ -44,7 +70,7 @@
 				<TrendingUp class="h-8 w-8 text-green-500" />
 			</div>
 		</div>
-		<div>
+		<div class="rounded-md bg-white p-6 shadow-sm">
 			<div class="flex items-center justify-between p-6">
 				<div>
 					<p class="text-sm font-medium text-gray-500">Expenses</p>
@@ -58,7 +84,7 @@
 	</div>
 
 	<!-- Charts -->
-	<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+	<div class="grid grid-cols-1 gap-6 bg-white p-6 shadow-sm md:grid-cols-2">
 		<div>
 			<div class="p-6">
 				<h3 class="text-lg font-semibold">Income vs Expenses</h3>
@@ -88,6 +114,33 @@
 		</div>
 	</div>
 
+	<!-- Recent Transactions -->
+	<div class="rounded-lg bg-white p-6 shadow-sm">
+		<div class="mb-6 flex items-center justify-between">
+			<h2 class="text-lg font-medium text-gray-900">Recent Transactions</h2>
+			<a href="/dashboard/transactions" class="text-sm text-blue-600 hover:text-blue-800"
+				>View all</a
+			>
+		</div>
+		<div class="space-y-4">
+			{#each recentTransactions as transaction}
+				<div class="flex items-center justify-between border-b border-gray-100 pb-4">
+					<div class="flex items-center space-x-3">
+						<div class="rounded-full bg-gray-100 p-2">
+							<ActivityIcon class="h-5 w-5 text-gray-600" />
+						</div>
+						<div>
+							<p class="font-medium text-gray-900">{transaction.title}</p>
+							<p class="text-sm text-gray-500">{transaction.date}</p>
+						</div>
+					</div>
+					<span class={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
+						{transaction.amount}
+					</span>
+				</div>
+			{/each}
+		</div>
+	</div>
 	<!-- Budget Alert -->
 	<div class="border-yellow-200 bg-yellow-50">
 		<div class="flex items-center p-6">

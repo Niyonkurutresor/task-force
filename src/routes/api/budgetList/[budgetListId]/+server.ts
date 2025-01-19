@@ -14,11 +14,11 @@ export const GET: RequestHandler = async ({ params }) => {
 			.select()
 			.from(table.BudgetListTable)
 			.where(eq(table.BudgetListTable.budget_list_id, budgetListId ?? ''));
-		if (!budgetLIst || budgetLIst.length === 0) return respond('Failed to find budget', 404);
-		return respond(budgetLIst, 200);
+		if (!budgetLIst || budgetLIst.length === 0) return respond(404, '', 'Failed to find budget');
+		return respond(200, budgetLIst);
 	} catch (error) {
 		console.log(error);
-		return respond('INTERNAL SERVER ERROR', 500);
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -31,7 +31,7 @@ export const PATCH: RequestHandler = async ({ request, params }) => {
 			.select()
 			.from(table.BudgetListTable)
 			.where(eq(table.BudgetListTable.budget_list_id, budgetListId ?? ''));
-		if (!budgetList || budgetList.length === 0) return respond('Failed to find budget', 404);
+		if (!budgetList || budgetList.length === 0) return respond(404, '', 'Failed to find budget');
 		await db
 			.update(table.BudgetListTable)
 			.set({
@@ -41,11 +41,11 @@ export const PATCH: RequestHandler = async ({ request, params }) => {
 				amount: validatedData.amount
 			})
 			.where(eq(table.BudgetListTable.budget_list_id, budgetListId ?? ''));
-		return respond('Budget updated successfull!', 200);
+		return respond(200, 'Budget updated successfull!');
 	} catch (error) {
 		console.log(error);
-		if (error instanceof z.ZodError) return respond('Validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'Validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -56,13 +56,14 @@ export const DELETE: RequestHandler = async ({ params }) => {
 			.select()
 			.from(table.BudgetTable)
 			.where(eq(table.BudgetListTable.budget_list_id, budgetListId ?? ''));
-		if (!budgetList || budgetList.length === 0) return respond('Failed to find budget_list', 404);
+		if (!budgetList || budgetList.length === 0)
+			return respond(404, '', 'Failed to find budget_list');
 		await db
 			.delete(table.BudgetListTable)
 			.where(eq(table.BudgetListTable.budget_list_id, budgetListId ?? ''));
-		return respond('Budget Deleted successfully.', 200);
+		return respond(200, 'Budget Deleted successfully.');
 	} catch (error) {
 		console.log(error);
-		return respond('INTERNAL SERVER ERROR', 500);
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };

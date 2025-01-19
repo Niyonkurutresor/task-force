@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		let currentBallance = await db
 			.select()
 			.from(table.TransactionTable)
-			.orderBy(desc(table.TransactionTable.create_at))
+			.orderBy(desc(table.TransactionTable.created_at))
 			.limit(1);
 		if (!currentBallance || currentBallance.length == 0) {
 			// record one for initial
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			currentBallance = await db
 				.select()
 				.from(table.TransactionTable)
-				.orderBy(desc(table.TransactionTable.create_at))
+				.orderBy(desc(table.TransactionTable.created_at))
 				.limit(1);
 		}
 		// record transaction.
@@ -41,10 +41,10 @@ export const POST: RequestHandler = async ({ request }) => {
 			payment_method_id: validatedData.payment_method_id,
 			balance: currentBallance[0].balance + (validatedData?.income ?? 0)
 		});
-		return respond('Transaction accured successfully', 200);
+		return respond(200, 'Transaction accured successfully');
 	} catch (error) {
 		console.log(error);
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };

@@ -9,13 +9,14 @@ import { categoryShema } from '$lib/schemas';
 export const GET: RequestHandler = async () => {
 	try {
 		const categories = await db.select().from(table.CategoryTable);
-		if (!categories || categories?.length === 0) return respond('Failed to find categories', 404);
-		return respond(categories, 200);
+		if (!categories || categories?.length === 0)
+			return respond(404, '', 'Failed to find categories');
+		return respond(200, categories);
 	} catch (error) {
 		if (error instanceof z.ZodError) {
-			return respond('validation failed', 415);
+			return respond(415, 'validation failed');
 		}
-		return respond('INTERNAL SERVER ERROR', 500);
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -28,9 +29,9 @@ export const POST: RequestHandler = async ({ request }) => {
 			category_name: validatedData.name,
 			category_description: validatedData.descrition
 		});
-		return respond('Category created successfully.', 200);
+		return respond(200, 'Category created successfully.');
 	} catch (error) {
-		if (error instanceof z.ZodError) return respond('validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };

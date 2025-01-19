@@ -13,11 +13,11 @@ export const GET: RequestHandler = async ({ params }) => {
 			.select()
 			.from(table.BudgetTable)
 			.where(eq(table.BudgetTable.budget_id, budgetId ?? ''));
-		if (!budget || budget.length === 0) return respond('Failed to find budget', 404);
-		return respond(budget, 200);
+		if (!budget || budget.length === 0) return respond(404, '', 'Failed to find budget');
+		return respond(200, budget);
 	} catch (error) {
 		console.log(error);
-		return respond('INTERNAL SERVER ERROR', 500);
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -30,7 +30,7 @@ export const PATCH: RequestHandler = async ({ request, params }) => {
 			.select()
 			.from(table.BudgetTable)
 			.where(eq(table.BudgetTable.budget_id, budgetId ?? ''));
-		if (!budget || budget.length === 0) return respond('Failed to find budget', 404);
+		if (!budget || budget.length === 0) return respond(404, '', 'Failed to find budget');
 		await db
 			.update(table.BudgetTable)
 			.set({
@@ -40,11 +40,11 @@ export const PATCH: RequestHandler = async ({ request, params }) => {
 				end_date: validatedData.end_date
 			})
 			.where(eq(table.BudgetTable.budget_id, budgetId ?? ''));
-		return respond('Budget updated successfull!', 200);
+		return respond(200, 'Budget updated successfull!');
 	} catch (error) {
 		console.log(error);
-		if (error instanceof z.ZodError) return respond('Validation failed', 415);
-		return respond('INTERNAL SERVER ERROR', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'Validation failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };
 
@@ -55,11 +55,11 @@ export const DELETE: RequestHandler = async ({ params }) => {
 			.select()
 			.from(table.BudgetTable)
 			.where(eq(table.BudgetTable.budget_id, budgetId ?? ''));
-		if (!budget || budget.length === 0) return respond('Failed to find budget', 404);
+		if (!budget || budget.length === 0) return respond(404, '', 'Failed to find budget');
 		await db.delete(table.BudgetTable).where(eq(table.BudgetTable.budget_id, budgetId ?? ''));
-		return respond('Budget Deleted successfully.', 200);
+		return respond(200, 'Budget Deleted successfully.');
 	} catch (error) {
 		console.log(error);
-		return respond('INTERNAL SERVER ERROR', 500);
+		return respond(500, '', 'INTERNAL SERVER ERROR');
 	}
 };

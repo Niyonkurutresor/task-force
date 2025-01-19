@@ -12,12 +12,12 @@ export const GET: RequestHandler = async ({ params }) => {
 			.select()
 			.from(table.ExpenseTable)
 			.where(eq(table.ExpenseTable.expense_id, expensiId ?? ''));
-		if (!expense || expense.length === 0) return respond('There is no such Spending', 404);
-		return respond(expense, 200);
+		if (!expense || expense.length === 0) return respond(404, '', 'There is no such Spending');
+		return respond(200, expense);
 	} catch (error) {
 		console.log(error);
-		if (error instanceof z.ZodError) return respond('Validation Failed', 415);
-		return respond('INTERNAL SERVER ERROR.', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'Validation Failed');
+		return respond(500, '', 'INTERNAL SERVER ERROR.');
 	}
 };
 
@@ -26,10 +26,10 @@ export const PATCH: RequestHandler = async () => {
 		// check if amount are not exced expected spending
 
 		// update the balance
-		return respond('Updated successfully', 200);
+		return respond(200, 'Updated successfully');
 	} catch (error) {
 		console.log(error);
-		if (error instanceof z.ZodError) return respond('Validation fails', 415);
-		return respond('INTERNAL SERVER ERROR.', 500);
+		if (error instanceof z.ZodError) return respond(415, '', 'Validation fails');
+		return respond(500, '', 'INTERNAL SERVER ERROR.');
 	}
 };

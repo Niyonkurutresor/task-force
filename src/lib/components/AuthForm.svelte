@@ -5,6 +5,7 @@
 	export let errors: any;
 	export let enhance: any;
 	export let message: string | undefined;
+	export let submitting: boolean = false;
 </script>
 
 <form method="POST" action="?/{type}" use:enhance class="space-y-4">
@@ -62,5 +63,8 @@
 		class="w-full rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 	>
 		{type === 'login' ? 'Sign In' : 'Sign Up'}
+		{#if submitting}
+			<span class=" pl-3">.....</span>
+		{/if}
 	</button>
 </form>
