@@ -38,10 +38,15 @@
 		}
 	});
 
-	// afterUpdate(async () => {
-	// 	const bgt = await fetch(`${PUBLIC_API_URL}/budget`);
-	// 	budgets = (await bgt.json())?.message ?? [];
-	// });
+	afterUpdate(async () => {
+		try {
+			const bgt = await fetch(`${PUBLIC_API_URL}/budget`);
+			budgets = (await bgt.json())?.message ?? [];
+		} catch (error) {
+			console.error('Error fetching settings data:', error);
+		}
+	});
+
 	let budgetModel = false;
 	let addBudgetModel = false;
 	let selectedId = '';

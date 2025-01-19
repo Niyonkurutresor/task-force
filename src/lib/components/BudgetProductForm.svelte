@@ -2,7 +2,9 @@
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import toast from 'svelte-french-toast';
 	export let closeModals: () => void;
+	import { createEventDispatcher } from 'svelte';
 	let newBudget = { name: '', descrition: '', start_date: '', end_date: '' };
+
 	async function addNewBudget() {
 		try {
 			const response = await fetch(`${PUBLIC_API_URL ?? ''}/budget/`, {

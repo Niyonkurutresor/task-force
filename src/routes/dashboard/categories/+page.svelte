@@ -3,6 +3,7 @@
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import DeleteContent from './components/delteContent.svelte';
+	import EditContent from './components/editForm.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import toast from 'svelte-french-toast';
 	type Category = {
@@ -38,6 +39,7 @@
 	let expandedCategories = new Set<string>();
 	let openEditModle = false;
 	let openDeleteModle = false;
+	let name = '';
 	let selectedId = '';
 	let selectedtype: 'CATEGORY' | 'SUBCATEGORY' = 'CATEGORY';
 
@@ -73,18 +75,26 @@
 		}
 	}
 
-	function handleDeleteSubcategory(subCategoryId: string) {
-		if (confirm('Are you sure you want to delete this subcategory?')) {
-			console.log('Delete subcategory:', subCategoryId);
+	async function handleDeleteSucCategory(subcategoryId: string) {
+		const deletedCategory = await fetch(`${PUBLIC_API_URL}/subCategory/${subcategoryId}`, {
+			method: 'DELETE',
+			body: JSON.stringify({})
+		});
+		const response = await deletedCategory.json();
+		if (response?.message) {
+			toast.success(response?.message ?? '');
+			openDeleteModle = false;
+		} else {
+			toast.error(response?.error ?? '');
 		}
 	}
 
 	function handleEditCategory(category: Category) {
-		console.log('Edit category:', category);
+		openEditModle == true;
 	}
 
 	function handleEditSubcategory(subCategory: SubCategory) {
-		console.log('Edit subcategory:', subCategory);
+		openEditModle == true;
 	}
 </script>
 
@@ -122,7 +132,11 @@
 						<div class="flex justify-center space-x-2">
 							<button
 								class="rounded p-1 text-blue-600 hover:bg-blue-100"
-								on:click={() => handleEditCategory(category)}
+								on:click={() => {
+									(openEditModle = true),
+										(selectedtype = 'CATEGORY'),
+										(selectedId = category.category_id);
+								}}
 							>
 								<Edit size={18} />
 							</button>
@@ -130,6 +144,7 @@
 								class="rounded p-1 text-red-600 hover:bg-red-100"
 								on:click={() => {
 									openDeleteModle = true;
+									name = category.category_name;
 									selectedId = category?.category_id ?? '';
 									selectedtype = 'CATEGORY';
 								}}
@@ -152,13 +167,22 @@
 								<div class="flex justify-center space-x-2">
 									<button
 										class="rounded p-1 text-blue-600 hover:bg-blue-100"
-										on:click={() => handleEditSubcategory(subCategory)}
+										on:click={() => {
+											(openEditModle = true),
+												(selectedtype = 'SUBCATEGORY'),
+												(selectedId = category.category_id);
+										}}
 									>
 										<Edit size={18} />
 									</button>
 									<button
 										class="rounded p-1 text-red-600 hover:bg-red-100"
-										on:click={() => handleDeleteSubcategory(subCategory.sub_category_id)}
+										on:click={() => {
+											openDeleteModle = true;
+											name = subCategory.sub_category_name;
+											selectedId = subCategory?.sub_category_id ?? '';
+											selectedtype = 'SUBCATEGORY';
+										}}
 									>
 										<Trash2 size={18} />
 									</button>
@@ -176,10 +200,22 @@
 	{#if selectedtype === 'CATEGORY'}
 		<Modal isOpen={openDeleteModle} onClose={closeModals}>
 			<DeleteContent
-				name={'soemthing'}
+				{name}
 				canselDelete={closeModals}
 				confirmDelete={() => handleDeleteCategory(selectedId)}
 			/>
 		</Modal>
 	{/if}
+	{#if selectedtype === 'SUBCATEGORY'}
+		<Modal isOpen={openDeleteModle} onClose={closeModals}>
+			<DeleteContent
+				{name}
+				canselDelete={closeModals}
+				confirmDelete={() => handleDeleteSucCategory(selectedId)}
+			/>
+		</Modal>
+	{/if}
+	<Modal isOpen={openEditModle} onClose={closeModals}>
+		<EditContent selectedType="{selectedtype}," {selectedId} canselDelete={closeModals} />
+	</Modal>
 </div>
