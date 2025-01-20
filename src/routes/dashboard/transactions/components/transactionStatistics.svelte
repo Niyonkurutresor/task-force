@@ -10,7 +10,7 @@
 </script>
 
 <div class="space-y-6">
-	<h1 class="text-2xl font-semibold text-gray-900">Transactions</h1>
+	<h1 class="text-2xl font-semibold text-gray-900">Transaction History</h1>
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 		{#each stats as stat}
 			<div class="rounded-lg bg-white p-6 shadow-sm">

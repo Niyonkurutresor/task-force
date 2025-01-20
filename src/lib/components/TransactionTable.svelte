@@ -15,19 +15,34 @@
 	}
 
 	let transactions: Transaction[] = [];
+	let allTransactions: Transaction[] = [];
+	let search = '';
 
 	onMount(async () => {
 		try {
 			isLoading = true;
 			const allCategories = await fetch(`${PUBLIC_API_URL}/transaction`);
-			transactions = (await allCategories.json())?.message ?? [];
-
+			allTransactions = (await allCategories.json())?.message ?? [];
+			transactions = allTransactions;
 			isLoading = false;
 		} catch (error) {
 			console.error('Error fetching settings data:', error);
 			isLoading = false;
 		}
 	});
+
+	$: if (search) {
+		transactions = allTransactions.filter(
+			(transaction) =>
+				transaction.payment_method?.toLowerCase().includes(search.toLowerCase()) ||
+				transaction.income?.toString().includes(search) ||
+				transaction.expanse?.toString().includes(search) ||
+				transaction.balance?.toString().includes(search) ||
+				transaction.date?.toString().includes(search)
+		);
+	} else {
+		transactions = allTransactions;
+	}
 </script>
 
 <div class="space-y-4">
@@ -37,22 +52,24 @@
 				<SearchIcon class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
 				<input
 					type="text"
+					bind:value={search}
 					placeholder="Search transactions..."
 					class="rounded-lg border border-gray-300 py-2 pl-10 pr-4 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
 				/>
 			</div>
-
+			<!-- 
 			<button
 				class="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-50"
 			>
 				<FilterIcon class="h-4 w-4" />
 				<span>Filter</span>
-			</button>
+			</button> -->
 		</div>
 	</div>
 
-	<div class="rounded-lg border border-gray-200 bg-white">
+	<div class="rounded-lg border border-gray-200 bg-white" {id}>
 		<div class="overflow-x-auto">
+			<h1 class=" my-[1rem] ml-[2rem] text-xl text-gray-500">Transaction summary</h1>
 			<table class="min-w-full divide-y divide-gray-200">
 				<thead class="bg-gray-50">
 					<tr>
@@ -83,7 +100,7 @@
 						</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-gray-200 bg-white" {id}>
+				<tbody class="divide-y divide-gray-200 bg-white">
 					{#if isLoading}
 						{#each Array(5) as _}
 							<tr class="animate-pulse">

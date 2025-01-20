@@ -140,12 +140,12 @@
 						<th
 							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
 						>
-							Date
+							Quantity
 						</th>
 						<th
 							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
 						>
-							Category
+							Total Price
 						</th>
 						<th
 							class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
@@ -177,11 +177,9 @@
 							<tr class="hover:bg-gray-50">
 								<td class="whitespace-nowrap px-6 py-4">
 									<div class="text-sm text-gray-900">
-										{subCategories.map((sub_category) =>
-											sub_category.sub_category_id == product.sub_category_id
-												? sub_category.sub_category_name
-												: ''
-										)[0]}
+										{subCategories.filter(
+											(sub_category) => sub_category.sub_category_id == product.sub_category_id
+										)[0]?.sub_category_name}
 									</div>
 								</td>
 								<td class="whitespace-nowrap px-6 py-4">

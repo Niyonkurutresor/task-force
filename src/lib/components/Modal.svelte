@@ -19,7 +19,7 @@
 		transition:fade={{ duration: 200 }}
 	>
 		<div
-			class="w-full max-w-6xl rounded-lg bg-white p-6 shadow-xl"
+			class="max-h-lvh w-full max-w-6xl overflow-y-scroll rounded-lg bg-white p-6 shadow-xl"
 			on:click|stopPropagation
 			transition:scale={{
 				duration: 300,

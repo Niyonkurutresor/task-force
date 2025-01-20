@@ -6,6 +6,7 @@
 	import EditContent from './components/editForm.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import toast from 'svelte-french-toast';
+	import Loader from '$lib/components/loader.svelte';
 	type Category = {
 		category_id: string;
 		category_name: string;
@@ -21,18 +22,22 @@
 		created_at: string;
 	};
 
+	let isLoading = false;
 	export let categories: Category[] = [];
 	export let subCategories: SubCategory[] = [];
 
 	onMount(async () => {
+		isLoading = true;
 		try {
 			const allCategories = await fetch(`${PUBLIC_API_URL}/category`);
 			const subCategorie = await fetch(`${PUBLIC_API_URL}/subCategory`);
 
 			categories = (await allCategories.json())?.message ?? [];
 			subCategories = (await subCategorie.json())?.message ?? [];
+			isLoading = false;
 		} catch (error) {
 			console.error('Error fetching settings data:', error);
+			isLoading = false;
 		}
 	});
 
@@ -109,90 +114,94 @@
 				<th class="px-4 py-2 text-center">Actions</th>
 			</tr>
 		</thead>
-		<tbody>
-			{#each categories as category}
-				<!-- category -->
-				<tr class="border-b hover:bg-gray-50">
-					<td class="px-4 py-2">
-						<button
-							class="rounded p-1 hover:bg-gray-200"
-							on:click={() => toggleCategory(category.category_id)}
-						>
-							{#if expandedCategories.has(category.category_id)}
-								<ChevronDown size={20} />
-							{:else}
-								<ChevronRight size={20} />
-							{/if}
-						</button>
-					</td>
-					<td class="px-4 py-2 font-medium">{category.category_name}</td>
-					<td class="px-4 py-2">{category.category_description}</td>
-					<td class="px-4 py-2">{new Date(category.created_at).toLocaleDateString()}</td>
-					<td class="px-4 py-2">
-						<div class="flex justify-center space-x-2">
+		{#if !isLoading}
+			<tbody>
+				{#each categories as category}
+					<!-- category -->
+					<tr class="border-b hover:bg-gray-50">
+						<td class="px-4 py-2">
 							<button
-								class="rounded p-1 text-blue-600 hover:bg-blue-100"
-								on:click={() => {
-									(openEditModle = true),
-										(selectedtype = 'CATEGORY'),
-										(selectedId = category.category_id);
-								}}
+								class="rounded p-1 hover:bg-gray-200"
+								on:click={() => toggleCategory(category.category_id)}
 							>
-								<Edit size={18} />
+								{#if expandedCategories.has(category.category_id)}
+									<ChevronDown size={20} />
+								{:else}
+									<ChevronRight size={20} />
+								{/if}
 							</button>
-							<button
-								class="rounded p-1 text-red-600 hover:bg-red-100"
-								on:click={() => {
-									openDeleteModle = true;
-									name = category.category_name;
-									selectedId = category?.category_id ?? '';
-									selectedtype = 'CATEGORY';
-								}}
-							>
-								<Trash2 size={18} />
-							</button>
-						</div>
-					</td>
-				</tr>
+						</td>
+						<td class="px-4 py-2 font-medium">{category.category_name}</td>
+						<td class="px-4 py-2">{category.category_description}</td>
+						<td class="px-4 py-2">{new Date(category.created_at).toLocaleDateString()}</td>
+						<td class="px-4 py-2">
+							<div class="flex justify-center space-x-2">
+								<button
+									class="rounded p-1 text-blue-600 hover:bg-blue-100"
+									on:click={() => {
+										(openEditModle = true),
+											(selectedtype = 'CATEGORY'),
+											(selectedId = category.category_id);
+									}}
+								>
+									<Edit size={18} />
+								</button>
+								<button
+									class="rounded p-1 text-red-600 hover:bg-red-100"
+									on:click={() => {
+										openDeleteModle = true;
+										name = category.category_name;
+										selectedId = category?.category_id ?? '';
+										selectedtype = 'CATEGORY';
+									}}
+								>
+									<Trash2 size={18} />
+								</button>
+							</div>
+						</td>
+					</tr>
 
-				<!-- subcategory -->
-				{#if expandedCategories.has(category.category_id)}
-					{#each getSubcategoriesForCategory(category.category_id) as subCategory}
-						<tr class="border-b bg-gray-50">
-							<td class="px-4 py-2"></td>
-							<td class="px-4 py-2 pl-8">{subCategory.sub_category_name}</td>
-							<td class="px-4 py-2">{subCategory.sub_category_description}</td>
-							<td class="px-4 py-2">{new Date(subCategory.created_at).toLocaleDateString()}</td>
-							<td class="px-4 py-2">
-								<div class="flex justify-center space-x-2">
-									<button
-										class="rounded p-1 text-blue-600 hover:bg-blue-100"
-										on:click={() => {
-											(openEditModle = true),
-												(selectedtype = 'SUBCATEGORY'),
-												(selectedId = category.category_id);
-										}}
-									>
-										<Edit size={18} />
-									</button>
-									<button
-										class="rounded p-1 text-red-600 hover:bg-red-100"
-										on:click={() => {
-											openDeleteModle = true;
-											name = subCategory.sub_category_name;
-											selectedId = subCategory?.sub_category_id ?? '';
-											selectedtype = 'SUBCATEGORY';
-										}}
-									>
-										<Trash2 size={18} />
-									</button>
-								</div>
-							</td>
-						</tr>
-					{/each}
-				{/if}
-			{/each}
-		</tbody>
+					<!-- subcategory -->
+					{#if expandedCategories.has(category.category_id)}
+						{#each getSubcategoriesForCategory(category.category_id) as subCategory}
+							<tr class="border-b bg-gray-50">
+								<td class="px-4 py-2"></td>
+								<td class="px-4 py-2 pl-8">{subCategory.sub_category_name}</td>
+								<td class="px-4 py-2">{subCategory.sub_category_description}</td>
+								<td class="px-4 py-2">{new Date(subCategory.created_at).toLocaleDateString()}</td>
+								<td class="px-4 py-2">
+									<div class="flex justify-center space-x-2">
+										<button
+											class="rounded p-1 text-blue-600 hover:bg-blue-100"
+											on:click={() => {
+												(openEditModle = true),
+													(selectedtype = 'SUBCATEGORY'),
+													(selectedId = category.category_id);
+											}}
+										>
+											<Edit size={18} />
+										</button>
+										<button
+											class="rounded p-1 text-red-600 hover:bg-red-100"
+											on:click={() => {
+												openDeleteModle = true;
+												name = subCategory.sub_category_name;
+												selectedId = subCategory?.sub_category_id ?? '';
+												selectedtype = 'SUBCATEGORY';
+											}}
+										>
+											<Trash2 size={18} />
+										</button>
+									</div>
+								</td>
+							</tr>
+						{/each}
+					{/if}
+				{/each}
+			</tbody>
+		{:else}
+			<Loader />
+		{/if}
 	</table>
 
 	<!-- <Modal isOpen={openEditModle} onClose={closeModals}>
