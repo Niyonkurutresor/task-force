@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { afterUpdate, onMount } from 'svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { SearchIcon, FilterIcon } from 'svelte-feather-icons';
 	export let id;

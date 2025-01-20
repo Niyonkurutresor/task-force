@@ -46,10 +46,14 @@
 		}
 	});
 
-	// afterUpdate(async () => {
-	// 	const allCategories = await fetch(`${PUBLIC_API_URL}/category`);
-	// 	categories = (await allCategories.json())?.message ?? [];
-	// });
+	afterUpdate(async () => {
+		try {
+			const allCategories = await fetch(`${PUBLIC_API_URL}/category`);
+			categories = (await allCategories.json())?.message ?? [];
+		} catch (error) {
+			console.error('Error fetching settings data:', error);
+		}
+	});
 
 	async function updateProfile() {
 		if (newPassword !== confirmPassword) {
@@ -141,27 +145,22 @@
 </script>
 
 <div class="container mx-auto p-6">
-	<h1
-		class="mb-8 w-fit text-3xl font-bold"
-		use:tippy={{
-			content: 'Hoverd cotente',
-			placement: 'top',
-			arrow: roundArrow,
-			theme: 'light',
-			animation: 'perspective-subtle'
-		}}
-	>
-		Settings
-	</h1>
+	<h1 class="mb-8 w-fit text-3xl font-bold">Settings</h1>
 
 	<!-- pprofile Section -->
 	<section class="mb-8 rounded-lg bg-white p-6 shadow">
 		<h2 class="mb-4 text-2xl font-semibold">Profile Settings</h2>
 		{#if !isEditingProfile}
 			<div class="mb-4">
-				<p class="mb-2"><strong>Name:</strong> {user?.name}</p>
 				<button
-					class="rounded bg-blue-500 px-4 py-2 text-white"
+					class="mt-[1rem] rounded bg-blue-500 px-4 py-2 text-white"
+					use:tippy={{
+						content: "Edit It's not done",
+						placement: 'top',
+						arrow: roundArrow,
+						theme: 'light',
+						animation: 'perspective-subtle'
+					}}
 					on:click={() => {
 						isEditingProfile = true;
 						newName = user?.name || '';
@@ -194,7 +193,7 @@
 					<input type="password" bind:value={confirmPassword} class="w-full rounded border p-2" />
 				</div>
 				<div class="flex space-x-4">
-					<button type="submit" class="rounded bg-green-500 px-4 py-2 text-white">
+					<button type="submit" disabled class="rounded bg-green-500 px-4 py-2 text-white">
 						Save Changes
 					</button>
 					<button
@@ -218,7 +217,7 @@
 			<form on:submit|preventDefault={addCategory} class="flex space-x-4">
 				<input
 					type="text"
-					placeholder="Category Name"
+					placeholder="Category Name ex(Food)"
 					bind:value={newCategory.name}
 					class="flex-1 rounded border p-2"
 					required
@@ -243,7 +242,7 @@
 			<form on:submit|preventDefault={addSubCategory} class="flex flex-col gap-3">
 				<input
 					type="text"
-					placeholder="Sub category Name"
+					placeholder="Sub category Name ex(Banana)"
 					bind:value={newSubCategory.name}
 					class="flex-1 rounded border p-2"
 					required

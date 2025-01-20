@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Trash2, Edit, ChevronDown, ChevronRight } from 'lucide-svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
-	import { onMount } from 'svelte';
+	import { afterUpdate, onMount } from 'svelte';
 	import DeleteContent from './components/delteContent.svelte';
 	import EditContent from './components/editForm.svelte';
 	import Modal from '$lib/components/Modal.svelte';
