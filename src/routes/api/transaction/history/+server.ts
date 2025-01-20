@@ -67,8 +67,14 @@ export const GET: RequestHandler = async () => {
 		const currentBalance = currentMonthTransactions[0]?.balance || 0;
 		const totalBudget = currentBudget.reduce((sum, b) => sum + b.amount, 0);
 
-		const incomeChange = ((currentTotalIncome - lastTotalIncome) / lastTotalIncome) * 100;
-		const expenseChange = ((currentTotalExpenses - lastTotalExpenses) / lastTotalExpenses) * 100;
+		const incomeChange =
+			((currentTotalIncome - lastTotalIncome) /
+				(lastTotalIncome > 0 ? lastTotalIncome : currentTotalIncome)) *
+			100;
+		const expenseChange =
+			((currentTotalExpenses - lastTotalExpenses) /
+				(lastTotalExpenses > 0 ? lastTotalExpenses : currentTotalExpenses)) *
+			100;
 		const savings = currentTotalIncome - currentTotalExpenses;
 		const lastSavings = lastTotalIncome - lastTotalExpenses;
 		const savingsChange = ((savings - lastSavings) / lastSavings) * 100;

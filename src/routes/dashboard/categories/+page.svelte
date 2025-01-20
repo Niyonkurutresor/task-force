@@ -6,7 +6,8 @@
 	import EditContent from './components/editForm.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import toast from 'svelte-french-toast';
-	import Loader from '$lib/components/loader.svelte';
+	import HomeTransactionLoader from '$lib/components/hometransactionLoader.svelte';
+
 	type Category = {
 		category_id: string;
 		category_name: string;
@@ -114,8 +115,8 @@
 				<th class="px-4 py-2 text-center">Actions</th>
 			</tr>
 		</thead>
-		{#if !isLoading}
-			<tbody>
+		<tbody>
+			{#if !isLoading}
 				{#each categories as category}
 					<!-- category -->
 					<tr class="border-b hover:bg-gray-50">
@@ -198,10 +199,14 @@
 						{/each}
 					{/if}
 				{/each}
-			</tbody>
-		{:else}
-			<Loader />
-		{/if}
+			{:else}
+				<tr>
+					<td colspan="5">
+						<HomeTransactionLoader />
+					</td>
+				</tr>
+			{/if}
+		</tbody>
 	</table>
 
 	<!-- <Modal isOpen={openEditModle} onClose={closeModals}>

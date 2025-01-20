@@ -9,6 +9,7 @@
 	import { date } from 'drizzle-orm/mysql-core';
 	import { afterUpdate, onMount } from 'svelte';
 	import formatDate from '$lib/helper/formdata';
+	import HomeTransactionLoader from '$lib/components/hometransactionLoader.svelte';
 
 	interface Business {
 		name: string;
@@ -110,11 +111,5 @@
 		</Modal>
 	</div>
 {:else}
-	{#each Array(6) as _}
-		<div class="card">
-			<div class="skeleton skeleton-title"></div>
-			<div class="skeleton skeleton-dates"></div>
-			<div class="skeleton skeleton-dates"></div>
-		</div>
-	{/each}
+	<HomeTransactionLoader />
 {/if}
