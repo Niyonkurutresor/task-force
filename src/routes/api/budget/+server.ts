@@ -5,11 +5,14 @@ import * as table from '$lib/server/db/schema';
 import { budgetSchema } from '$lib/schemas';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
-import { gt } from 'drizzle-orm';
+import { desc, gt } from 'drizzle-orm';
 
 export const GET: RequestHandler = async () => {
 	try {
-		const budget = await db.select().from(table.BudgetTable);
+		const budget = await db
+			.select()
+			.from(table.BudgetTable)
+			.orderBy(desc(table.BudgetTable.start_date));
 		if (!budget || budget.length === 0) return respond(404, '', 'Failed to find budget');
 		return respond(200, budget);
 	} catch (error) {
