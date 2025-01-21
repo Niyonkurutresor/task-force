@@ -65,7 +65,7 @@
 			const transaction = await response.json();
 			if (transaction?.message) {
 				closeModals();
-				return toast.success(transaction?.message ?? 'Product Category added successfully.');
+				return toast.success(transaction?.message ?? 'Product    Category added successfully.');
 			}
 			toast.error(transaction?.error ?? 'Something went wrong');
 		} catch (error) {
