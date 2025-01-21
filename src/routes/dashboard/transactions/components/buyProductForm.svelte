@@ -35,6 +35,7 @@
 			} else {
 				toast.error(paymentMethotsREsponse ?? 'Something Went wrong, Please try again.');
 			}
+
 			const response = await fetch(`${PUBLIC_API_URL ?? ''}/bugetListById/`);
 			const productsResult = await response.json();
 			if (productsResult?.message) {
@@ -45,6 +46,7 @@
 		} catch (error) {
 			toast.error('Something went wrong, Please try again.');
 			console.error('Error adding category:', error);
+			isLoading = false;
 		}
 		isLoading = false;
 	});
@@ -76,8 +78,6 @@
 <section class="rounded-lg bg-white p-6 shadow">
 	<h2 class="mb-4 text-2xl font-semibold">Buy Product</h2>
 	{#if isLoading}
-		<HomeTransactionLoader />
-	{:else}
 		<div class="mb-4">
 			<select bind:value={newIncome.payment_method_id} name="category_id" id="category_id">
 				<option value="" disabled> Resource</option>
@@ -151,5 +151,7 @@
 				</table>
 			</div>
 		</div>
+	{:else}
+		<HomeTransactionLoader />
 	{/if}
 </section>
