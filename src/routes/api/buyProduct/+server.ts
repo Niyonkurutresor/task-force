@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			});
 		} else {
 			await db.update(table.BudgetListTable).set({
-				amount: product[0].amount - validatedData.amount
+				amount: product[0]?.amount - validatedData?.amount
 			});
 		}
 		return respond(200, 'Transaction accured successfully');
