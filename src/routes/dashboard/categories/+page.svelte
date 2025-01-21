@@ -41,6 +41,16 @@
 			isLoading = false;
 		}
 	});
+	afterUpdate(async () => {
+		try {
+			const allCategories = await fetch(`${PUBLIC_API_URL}/category`);
+			const subCategorie = await fetch(`${PUBLIC_API_URL}/subCategory`);
+			categories = (await allCategories.json())?.message ?? [];
+			subCategories = (await subCategorie.json())?.message ?? [];
+		} catch (error) {
+			console.error('Error fetching settings data:', error);
+		}
+	});
 
 	let expandedCategories = new Set<string>();
 	let openEditModle = false;

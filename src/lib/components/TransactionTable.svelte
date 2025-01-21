@@ -31,6 +31,16 @@
 		}
 	});
 
+	afterUpdate(async () => {
+		try {
+			const allCategories = await fetch(`${PUBLIC_API_URL}/transaction`);
+			allTransactions = (await allCategories.json())?.message ?? [];
+			transactions = allTransactions;
+		} catch (error) {
+			console.error('Error fetching settings data:', error);
+		}
+	});
+
 	$: if (search) {
 		transactions = allTransactions.filter(
 			(transaction) =>
