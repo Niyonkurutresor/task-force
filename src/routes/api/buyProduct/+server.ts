@@ -68,13 +68,13 @@ export const POST: RequestHandler = async ({ request }) => {
 				`You exced ${validatedData.amount - product[0].amount} on planned budge. Process can not procced`
 			);
 		// create Transaction
+
 		const expenseId = uuidv4();
 		await db.insert(table.ExpenseTable).values({
 			expense_id: expenseId,
 			budget_list_id: validatedData.budget_list_id,
 			amount: validatedData.amount
 		});
-
 		// record transaction.
 		await db.insert(table.TransactionTable).values({
 			transaction_id: uuidv4(),
@@ -85,13 +85,22 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// update the blanace or status of the product
 		if (product[0].amount - validatedData.amount == 0) {
-			await db.update(table.BudgetListTable).set({
-				isBought: true
-			});
+			await db
+				.update(table.BudgetListTable)
+				.set({
+					amount: 0,
+					isBought: true,
+					updated_at: new Date()
+				})
+				.where(eq(table.BudgetListTable.budget_list_id, product[0]?.budget_list_id));
 		} else {
-			await db.update(table.BudgetListTable).set({
-				amount: product[0]?.amount - validatedData?.amount
-			});
+			await db
+				.update(table.BudgetListTable)
+				.set({
+					amount: product[0]?.amount - validatedData?.amount,
+					updated_at: new Date()
+				})
+				.where(eq(table.BudgetListTable.budget_list_id, product[0]?.budget_list_id));
 		}
 		return respond(200, 'Transaction accured successfully');
 	} catch (error) {
