@@ -51,7 +51,7 @@
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-	<!-- Navigation -->
+	<!-- navigation -->
 	<nav class="bg-white shadow">
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 			<div class="flex h-16 justify-between">
@@ -76,7 +76,6 @@
 		</div>
 	</nav>
 
-	<!-- Hero Section -->
 	<main class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
 		<div class="text-center" in:fade={{ duration: 1000, delay: 200 }}>
 			<h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
@@ -87,7 +86,7 @@
 				class="mx-auto mt-3 max-w-md text-base text-gray-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl"
 			>
 				Experience the best platform for your needs. Sign up now and join thousands of satisfied
-				users.
+				users.(Nb:Api are not protected for smoth test)
 			</p>
 			<div class="mx-auto mt-5 flex max-w-md justify-center space-x-4">
 				<button

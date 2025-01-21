@@ -49,7 +49,5 @@ export const methodOfPaymentSchema = z.object({
 
 export const userSchema = z.object({
 	user_name: z.string().min(3, 'Name must be more than three charactors'),
-	password: z
-		.string()
-		.regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/, { message: 'Invalid password' })
+	password: z.string().min(2, { message: 'to short password' })
 });
